@@ -136,7 +136,7 @@ section{grid-column:2;grid-row:3;padding:26px 0}
       <label class="amt"><span id="sym">£</span><input id="amt" inputmode="decimal" value="4.05" aria-label="Donation amount"></label>
       <button class="go" id="go">Pay <span id="shown">£4.05</span></button>
       <p class="note">🔒 Card payment is completed on Revolut's secure page. Check the amount there before you confirm. A note saying we both agree to this transaction is added for you.</p>
-      <p class="note warn">⚠️ Please keep the note on Revolut exactly as written. If the note is changed, the donation will be canceled.</p>
+      <p class="note warn">⚠️ Please keep the note on Revolut exactly as written. If the note is changed, the payment will be canceled.</p>
     </div>
   <div class="card conv-card">
       <h2>GBP to USD converter</h2>
@@ -212,8 +212,7 @@ function setCur(b){cur=b.dataset.c;sym=b.dataset.s;
  fmt();renderBoard()}
 document.querySelectorAll('.cb').forEach(function(b){b.onclick=function(){setCur(b)}});
 
-// ---- Leaderboard: add a line for each checked donation, then upload the file again ----
-// Example: {name:'Mia', amount:10, currency:'GBP'},
+
 var DONORS=[
 ];
 function renderBoard(){
