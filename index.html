@@ -189,76 +189,37 @@ DM me for any card exchanges!</p></div>
 </main>
 <div class="toast" id="toast" role="status"></div>
 <script>
-var GBP_USD=1.30; // GBP to USD rate
-var gbp=document.getElementById('gbp'),convout=document.getElementById('convout');
-function conv(){var raw=gbp.value.replace(/[^0-9.]/g,'');var dot=raw.indexOf('.');if(dot!==-1)raw=raw.slice(0,dot+1)+raw.slice(dot+1).replace(/\./g,'');if(gbp.value!==raw)gbp.value=raw;var v=parseFloat(raw);convout.textContent='$'+(v>0?v*GBP_USD:0).toFixed(2)}
-gbp.oninput=conv;
-
-var fx=document.getElementById('fx'),sy=['♥','✦','♡','✧'];
-for(var i=0;i<14;i++){var e=document.createElement('i');e.textContent=sy[i%4];
- e.style.left=Math.random()*100+'%';e.style.fontSize=(12+Math.random()*18)+'px';
- e.style.animationDuration=(9+Math.random()*10)+'s';e.style.animationDelay=(-Math.random()*14)+'s';fx.appendChild(e);}
-
-document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){
- document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected',x===b)});
- document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===b.dataset.t)});};});
-
-
-var NOTE='We both agree to this transaction.';
-var cur='GBP',sym='£';
-var amt=document.getElementById('amt'),shown=document.getElementById('shown');
-function fmt(){var v=parseFloat(amt.value.replace(',','.'));shown.textContent=v>0?sym+v.toFixed(2):''}
-document.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){
- document.querySelectorAll('.chip').forEach(function(x){x.setAttribute('aria-pressed',x===c)});
- amt.value=Number(c.dataset.v).toFixed(2);fmt()}});
-amt.oninput=function(){document.querySelectorAll('.chip').forEach(function(x){x.setAttribute('aria-pressed',false)});fmt()};
-var tt=document.getElementById('toast');
-function toast(m){tt.textContent=m;tt.classList.add('show');setTimeout(function(){tt.classList.remove('show')},2800)}
-document.getElementById('go').onclick=function(){
- var v=parseFloat(amt.value.replace(',','.'));
- if(!(v>=1)){toast('Enter an amount of 1 or more');return}
- if(v>5000){toast('The maximum is 5,000');return}
- window.open('https://revolut.me/dure313?amount='+Math.round(v*100)+'&currency='+cur+'&note='+encodeURIComponent(NOTE),'_blank','noopener')};
-
-document.getElementById('nitro').onclick=function(e){e.preventDefault();
- window.open('https://revolut.me/dure313?amount=405&currency=GBP&note='+encodeURIComponent(NOTE),'_blank','noopener')};
-
-function setCur(b){cur=b.dataset.c;sym=b.dataset.s;
- document.querySelectorAll('.cb').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
- document.getElementById('sym').textContent=sym;
- document.querySelectorAll('.chip').forEach(function(c){var v=Number(c.dataset.v);c.textContent=sym+(v%1?v.toFixed(2):v)});
- fmt();renderBoard()}
-document.querySelectorAll('.cb').forEach(function(b){b.onclick=function(){setCur(b)}});
-
-// ---- Leaderboard: add a line for each checked donation, then upload the file again ----
-// Example: {name:'Mia', amount:10, currency:'GBP'},
-var DONORS=[
-];
-function renderBoard(){
- var ol=document.getElementById('board');if(!ol)return;ol.innerHTML='';
- var list=DONORS.filter(function(d){return d.currency===cur}).sort(function(a,b){return b.amount-a.amount}).slice(0,10);
- if(!list.length){return}
- list.forEach(function(d,n){var li=document.createElement('li');
-  var r=document.createElement('span');r.className='rk';r.textContent=n+1;
-  var m=document.createElement('span');m.className='nm';m.textContent=d.name;
-  var a=document.createElement('span');a.className='am';a.textContent=sym+Number(d.amount).toFixed(2);
-  li.appendChild(r);li.appendChild(m);li.appendChild(a);ol.appendChild(li)})}
-renderBoard();
-
-var GBP_USD=1.30; // GBP to USD rate, update it from time to time
-var gbp=document.getElementById('gbp'),convout=document.getElementById('convout');
-function conv(){var raw=gbp.value.replace(/[^0-9.]/g,'');var dot=raw.indexOf('.');if(dot!==-1)raw=raw.slice(0,dot+1)+raw.slice(dot+1).replace(/\./g,'');if(gbp.value!==raw)gbp.value=raw;var v=parseFloat(raw);convout.textContent='$'+(v>0?v*GBP_USD:0).toFixed(2)}
-gbp.oninput=conv;
-
-
-document.getElementById('serverboosts').onclick=function(e){e.preventDefault();
- window.open('https://revolut.me/dure313?amount=210&currency=GBP&note='+encodeURIComponent(NOTE),'_blank','noopener')};
-
-document.getElementById('deco').onclick=function(e){e.preventDefault();
- window.open('https://revolut.me/dure313?amount=120&currency=GBP&note='+encodeURIComponent(NOTE),'_blank','noopener')};
-
-var TOTAL_DONATED=80; // update this number as donations arrive
-document.getElementById('total').textContent='£'+TOTAL_DONATED.toFixed(2);
+(function(){
+  'use strict';
+  var GBP_USD = 1.30;
+  var gbp = document.getElementById('gbp');
+  var convout = document.getElementById('convout');
+  function conv(){
+    if(!gbp || !convout) return;
+    var raw = gbp.value.replace(/[^0-9.]/g,'');
+    var dot = raw.indexOf('.');
+    if(dot !== -1) raw = raw.slice(0,dot+1) + raw.slice(dot+1).replace(/\./g,'');
+    if(gbp.value !== raw) gbp.value = raw;
+    var v = parseFloat(raw);
+    convout.textContent = '$' + (v > 0 ? v * GBP_USD : 0).toFixed(2);
+  }
+  if(gbp) gbp.addEventListener('input', conv);
+  var fx = document.getElementById('fx'), sy = ['♥','✦','♡','✧'];
+  if(fx){ for(var i=0;i<14;i++){ var e=document.createElement('i'); e.textContent=sy[i%4]; e.style.left=Math.random()*100+'%'; e.style.fontSize=(12+Math.random()*18)+'px'; e.style.animationDuration=(9+Math.random()*10)+'s'; e.style.animationDelay=(-Math.random()*14)+'s'; fx.appendChild(e); } }
+  function activateTab(b){
+    document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
+    document.querySelectorAll('main section').forEach(function(sec){sec.classList.toggle('on',sec.id===b.dataset.t);});
+  }
+  document.querySelectorAll('.tabs button[data-t]').forEach(function(b){b.addEventListener('click',function(){activateTab(b);});});
+  var NOTE='We both agree to this transaction.';
+  function openPayment(amount,currency){window.open('https://revolut.me/dure313?amount='+amount+'&currency='+currency+'&note='+encodeURIComponent(NOTE),'_blank','noopener');}
+  var productPayments={nitro:405,serverboosts:210,deco:120};
+  Object.keys(productPayments).forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('click',function(e){e.preventDefault();openPayment(productPayments[id],'GBP');});}});
+  var total=document.getElementById('total'); if(total) total.textContent='£80.00';
+  // Make sure the shop is visible on initial load.
+  var shopTab=document.querySelector('.tabs button[data-t="shop"]'); if(shopTab) activateTab(shopTab);
+  conv();
+})();
 </script>
 </body>
 </html>
